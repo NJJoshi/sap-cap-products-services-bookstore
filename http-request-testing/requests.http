@@ -81,4 +81,36 @@ GET http://localhost:8080/odata/v4/AdminService/Products
 Accept: application/json
 Authorization: Basic mia:pass_mia
 
+### Create Order as Mia
+
+POST http://localhost:8080/odata/v4/OrderService/Orders
+Content-Type: application/json
+Authorization: Basic mia:pass_mia
+
+{
+  "items": [
+    {
+      "book_ID": "fd0c5fda-8811-4e20-bcff-3a776abc290a",
+      "amount": 10
+    }
+  ]
+}
+
+### Read Orders as Mia for user specific create/read order scenario
+
+GET http://localhost:8080/odata/v4/OrderService/Orders?$expand=items
+Accept: application/json
+Authorization: Basic mia:pass_mia
+
+### Read Orders as Sabine (Administrator) for user specific create/read order scenario
+
+GET http://localhost:8080/odata/v4/OrderService/Orders?$expand=items
+Accept: application/json
+Authorization: Basic sabine:pass_sabine
+
+### Read Orders as Klaus for user specific create/read order scenario
+
+GET http://localhost:8080/odata/v4/OrderService/OrderItems
+Accept: application/json
+Authorization: Basic klaus:pass_klaus
 
