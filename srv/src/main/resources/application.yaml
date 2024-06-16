@@ -5,3 +5,18 @@ spring:
   sql.init.schema-locations: classpath:schema-h2.sql
 cds:
   data-source.auto-config.enabled: false
+  security:
+    mock:
+      users:
+        - name: klaus
+          password: pass_klaus
+          additional:
+            firstname: Klaus
+            lastname: Sussard
+            email: Klaus.Sussard@mail.com
+        - name: mia
+          password: pass_mia
+          additional:
+            firstname: Mia
+            lastname: Bonnellac
+            email: Mia.Bonnellac@mail.com
