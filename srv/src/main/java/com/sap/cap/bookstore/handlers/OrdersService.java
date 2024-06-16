@@ -1,5 +1,6 @@
 package com.sap.cap.bookstore.handlers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
@@ -70,6 +72,23 @@ public class OrdersService implements EventHandler {
             if( orderItems != null) {
                 validateBookAndDecreaseStock(orderItems);
             }
+        }
+    }
+
+    @After(event = {CqnService.EVENT_CREATE, CqnService.EVENT_READ}, entity = OrderItems_.CDS_NAME)
+    public void calculateNetAmount(List<OrderItems> items) {
+        for(OrderItems item : items) {
+            String bookId = item.getBookId();
+
+            //get the book that was ordered
+            CqnSelect sel = Select.from(Books_.class)
+                                  .where(b -> b.ID().eq(bookId));
+            Books book = db.run(sel)
+                            .single(Books.class);
+            
+            //calculate the net amount and set inside entity
+            BigDecimal finalAmount = book.getPrice().multiply(new BigDecimal(item.getAmount()));
+            item.setNetAmount(finalAmount);
         }
     }
 
