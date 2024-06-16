@@ -70,3 +70,15 @@ Authorization: Basic klaus:pass_klaus
   ]
 }
 
+### Read Products for Administrators Role addition testing positive scenario
+
+GET http://localhost:8080/odata/v4/AdminService/Products
+Accept: application/json
+Authorization: Basic sabine:pass_sabine
+
+### Read Products for Administrators Role addition testing negative scenario
+GET http://localhost:8080/odata/v4/AdminService/Products
+Accept: application/json
+Authorization: Basic mia:pass_mia
+
+

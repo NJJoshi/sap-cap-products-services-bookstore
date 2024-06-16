@@ -17,3 +17,6 @@ using { AdminService } from '@sap/capire-products';
 extend service AdminService with {
     entity Authors as projection on db.Authors;
 }
+
+//AdminService will only be accessible by role['Administrators'] users
+annotate AdminService @(requires: 'Administrators');
