@@ -92,5 +92,33 @@ public class OrdersService implements EventHandler {
         }
     }
 
+    @After(event = {CqnService.EVENT_CREATE, CqnService.EVENT_READ }, entity = Orders_.CDS_NAME)
+    public void calculateTotal(List<Orders> orders) {
+        for(Orders order : orders) {
+            // calculate net amount for expanded items
+            List<OrderItems> orderItems = order.getItems();
+            if(null != orderItems) {
+                calculateNetAmount(orderItems);
+            }
+
+            //get all items of the order
+            CqnSelect selItems = Select.from(OrderItems_.class)
+                                       .where(i -> i.parent().ID().eq(order.getId()));
+            
+            List<OrderItems> allItems = db.run(selItems)
+                                          .listOf(OrderItems.class);
+            
+            //calculate net amount of all items
+            calculateNetAmount(allItems);
+
+            // calculate and set the orders total
+            BigDecimal total = new BigDecimal(0);
+            for(OrderItems item : allItems) {
+                total = total.add(item.getNetAmount());
+            }
+            order.setTotal(total);
+        }
+    }
+
 
 }
